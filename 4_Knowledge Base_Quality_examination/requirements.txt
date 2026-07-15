@@ -1,0 +1,8 @@
+# 知识库质量检测工具依赖
+
+# 核心功能
+openai>=1.0.0          # DeepSeek API 调用（real 模式）
+pyyaml>=6.0            # 配置文件解析
+
+# 测试
+pytest>=7.0.0

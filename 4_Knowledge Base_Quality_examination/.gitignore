@@ -1,0 +1,15 @@
+# 知识库质量检测工具 .gitignore
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 测试缓存
+.pytest_cache/
+
+# 输出报告
+output/
+
+# 环境配置
+.env

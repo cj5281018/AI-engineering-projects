@@ -1,0 +1,98 @@
+# 客服回复幻觉检测工具 - 配置文件
+# 修改此文件后无需重启，重新运行即可生效
+
+# ==================== 输入输出 ====================
+io:
+  input_dir: "data"
+  output_dir: "output"
+  replies_file: "replies.json"
+  ground_truth_file: "ground_truth.json"
+
+# ==================== LLM 配置 ====================
+llm:
+  # provider: "mock" | "deepseek"
+  provider: "mock"
+  deepseek:
+    api_key: "sk-587f7e69f8b8449faee20ef0f458e307"   # 留空则读取环境变量 DEEPSEEK_API_KEY
+    model: "deepseek-chat"
+    base_url: "https://api.deepseek.com"
+  temperature: 0.0
+  max_tokens: 1000
+
+# ==================== 规则引擎配置 ====================
+rules:
+  kb_empty:
+    confidence: 0.92
+    trigger_threshold: 0.90
+    patterns:
+      - '查到了'
+      - '您的包裹'
+      - '在\S+转运中心'
+      - '预计.*送达'
+      - '预计.*到账'
+      - '退款.*处理中'
+      - '已帮您修改'
+      - '已为您修改'
+      - '已升级'
+      - '工单.*升级'
+      - '专属客服.*联系'
+      - '\d+小时内'
+      - '\d+天.*到'
+
+  numeric_conflict:
+    base_confidence: 0.75
+    boost_per_conflict: 0.05
+    max_confidence: 0.90
+    extract_patterns:
+      - ["(\\d+\\.?\\d*)\\s*天", "天数", "days"]
+      - ["(\\d+\\.?\\d*)\\s*小时", "小时", "hours"]
+      - ["(\\d+\\.?\\d*)\\s*个月", "月数", "months"]
+      - ["(\\d+\\.?\\d*)\\s*年", "年数", "years"]
+      - ["蓝牙\\s*(\\d+\\.?\\d*)", "蓝牙版本", "bluetooth"]
+      - ["满(\\d+)\\s*减(\\d+)", "满减", "discount"]
+      - ["(\\d+)\\s*ms", "延迟ms", "latency"]
+      - ["(\\d+)[-~](\\d+)\\s*天", "天数范围", "days"]
+      - ["(\\d+)[-~](\\d+)\\s*小时", "小时范围", "hours"]
+      - ["(\\d+)折", "折扣", "discount_rate"]
+      - ["(\\d+)%", "百分比", "percent"]
+
+  keyword_negation:
+    confidence: 0.70
+    safety_confidence: 0.75
+    negation_keywords:
+      - "未标注"
+      - "不支持"
+      - "不具备"
+      - "无"
+      - "不能"
+      - "不可"
+      - "不是"
+      - "未提及"
+      - "没有"
+
+# ==================== 融合引擎配置 ====================
+fusion:
+  rule_weight: 0.4
+  llm_weight: 0.6
+  rule_dominant_threshold: 0.90
+  conflict_llm_penalty: 0.8
+
+# ==================== 严重度映射 ====================
+severity_map:
+  参数编造: "high"
+  政策编造: "high"
+  能力越界: "high"
+  信息编造: "medium"
+  安全误导: "critical"
+  信息遗漏: "low"
+
+# ==================== 分类映射（人工标注 8 类 → 本体系 6 类） ====================
+type_mapping:
+  参数编造: "参数编造"
+  政策编造: "政策编造"
+  政策偏差: "政策编造"
+  优惠编造: "政策编造"
+  能力越界: "能力越界"
+  信息编造: "信息编造"
+  安全误导: "安全误导"
+  信息遗漏: "信息遗漏"

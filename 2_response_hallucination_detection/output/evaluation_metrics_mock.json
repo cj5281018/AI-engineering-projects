@@ -1,0 +1,123 @@
+{
+  "total_samples": 20,
+  "true_hallucinations": 18,
+  "true_non_hallucinations": 2,
+  "true_positive": 18,
+  "true_negative": 2,
+  "false_positive": 0,
+  "false_negative": 0,
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "specificity": 1.0,
+  "confusion_matrix": {
+    "tp": 18,
+    "fn": 0,
+    "fp": 0,
+    "tn": 2
+  },
+  "type_recall": {
+    "政策编造": {
+      "total": 5,
+      "detected": 5,
+      "missed": 0,
+      "recall": 1.0
+    },
+    "参数编造": {
+      "total": 4,
+      "detected": 4,
+      "missed": 0,
+      "recall": 1.0
+    },
+    "能力越界": {
+      "total": 4,
+      "detected": 4,
+      "missed": 0,
+      "recall": 1.0
+    },
+    "信息编造": {
+      "total": 3,
+      "detected": 3,
+      "missed": 0,
+      "recall": 1.0
+    },
+    "安全误导": {
+      "total": 1,
+      "detected": 1,
+      "missed": 0,
+      "recall": 1.0
+    },
+    "信息遗漏": {
+      "total": 1,
+      "detected": 1,
+      "missed": 0,
+      "recall": 1.0
+    }
+  },
+  "source_comparison": {
+    "rule_only": {
+      "count": 5,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "llm_only": {
+      "count": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "hybrid": {
+      "count": 9,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "false_negatives": [],
+  "false_positives": [],
+  "misanalysis": {
+    "summary": {
+      "total_misjudgments": 0,
+      "false_negatives_count": 0,
+      "false_positives_count": 0
+    },
+    "false_negatives": [],
+    "false_positives": [],
+    "type_analysis": [],
+    "difficult_cases": [
+      {
+        "id": "h04",
+        "difficulty": "中",
+        "reason": "部分正确部分错误。电子发票说对了但纸质发票是编造的。规则难以处理这种'半对半错'的情况，LLM 需要细致逐句对比。",
+        "risk": "可能漏检（如果 LLM 只看到了正确的部分）或类型误判"
+      },
+      {
+        "id": "h07",
+        "difficulty": "中高",
+        "reason": "能力越界+信息编造的混合。知识库说'需系统自动匹配后短信发送'，回复直接给地址。规则只能通过 KB-Empty（不适用，KB 非空）或关键词匹配（需要理解'不可口头告知'的语义）。",
+        "risk": "规则完全无法检出，完全依赖 LLM 的语义理解"
+      },
+      {
+        "id": "h09",
+        "difficulty": "中",
+        "reason": "知识库说'未标注NFC功能'——不等于'不支持NFC'。Keyword-Negation 规则可能误判为肯定（如果 '未标注NFC'↔'支持NFC' 匹配成功），但 LLM 应该能理解'未标注'和'不支持'的区别。",
+        "risk": "规则可能误报，但 LLM 可纠正"
+      },
+      {
+        "id": "h15",
+        "difficulty": "中",
+        "reason": "同 h09 类似。知识库说'未提及其他品牌关联关系'，回复说'XX旗下子品牌'。Keyword-Negation 规则可能检测到，LLM 需要做语义推理。",
+        "risk": "规则可能漏检（匹配不到关键词对），LLM 需要判断"
+      },
+      {
+        "id": "h20",
+        "difficulty": "高",
+        "reason": "信息遗漏型幻觉的边界最模糊。回复'尺码标准不偏'本身不是错误陈述，但知识库有'30%反馈偏大半码'的关键信息。LLM 需要判断'遗漏信息是否属于重要信息'。",
+        "risk": "最易漏检的 case，LLM 可能认为这不是幻觉"
+      }
+    ],
+    "recommendations": []
+  }
+}

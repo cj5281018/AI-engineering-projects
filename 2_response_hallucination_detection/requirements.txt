@@ -1,0 +1,5 @@
+# 客服回复幻觉检测工具 - 依赖
+
+openai>=1.30.0              # DeepSeek API (OpenAI 兼容)
+rich>=13.0.0                # 控制台美化输出
+pyyaml>=6.0                 # YAML 配置解析

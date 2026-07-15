@@ -1,0 +1,24 @@
+# =============================================================================
+# 客服自动回复质量评估 — 配置文件
+# =============================================================================
+
+# ---- 评估模式 ----
+mode: real                   # mock: 基于 human_ref 标注映射 (零成本)
+                             # real: 调用外部 LLM API 评分
+
+# ---- LLM 配置 (仅 real 模式需要) ----
+llm:
+  type: deepseek             
+  api_key: "sk-a67b0d7a0494459ba7a5e26fbcf61973"    # API Key (或通过环境变量 LLM_API_KEY 传入)
+  base_url: ""               # 为空则使用各 type 的默认端点
+  model: ""                  # 为空则使用各 type 的默认模型
+
+# ---- 数据文件路径 ----
+data:
+  auto_replies: data/auto_replies.json
+  human_ref: data/human_ref.json
+
+# ---- 输出路径 ----
+output:
+  results: output/2/eval_results.json
+  report: output/2/eval_report.md
